@@ -30,7 +30,7 @@ export default async function Home() {
           </div>
         ) : (
           <div className="space-y-4">
-            {posts.map((post) => (
+            {posts.map((post:Post) => (
               <Link
                 key={post.id}
                 href={`/posts/${post.id}`}
