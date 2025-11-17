@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface Post {
-  id: number;
+  id: string;
   title: string;
   content: string;
   author: string;

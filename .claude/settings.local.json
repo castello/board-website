@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx playwright install chromium)",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__list_migrations",
+      "Bash(npm run test:*)",
+      "Bash(lsof:*)",
+      "Bash(npm run dev:*)",
+      "Bash(rm:*)",
+      "Bash(npm install)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "playwright",
+    "supabase"
+  ]
+}

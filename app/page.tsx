@@ -1,15 +1,16 @@
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
-import type { Post } from '@prisma/client';
+import { supabase } from '@/lib/supabase';
+import type { Tables } from '@/types/database';
 
 export const dynamic = 'force-dynamic';
 
+type Post = Tables<'posts'>;
+
 export default async function Home() {
-  const posts: Post[] = await prisma.post.findMany({
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
+  const { data: posts } = await supabase
+    .from('posts')
+    .select('*')
+    .order('created_at', { ascending: false });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -24,13 +25,13 @@ export default async function Home() {
           </Link>
         </div>
 
-        {posts.length === 0 ? (
+        {!posts || posts.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-8 text-center text-gray-500">
             게시글이 없습니다. 첫 번째 글을 작성해보세요!
           </div>
         ) : (
           <div className="space-y-4">
-            {posts.map((post:Post) => (
+            {posts.map((post: Post) => (
               <Link
                 key={post.id}
                 href={`/posts/${post.id}`}
@@ -42,7 +43,7 @@ export default async function Home() {
                 <div className="flex justify-between items-center text-sm text-gray-600">
                   <span>작성자: {post.author}</span>
                   <span>
-                    {new Date(post.createdAt).toLocaleDateString('ko-KR')}
+                    {new Date(post.created_at || '').toLocaleDateString('ko-KR')}
                   </span>
                 </div>
               </Link>

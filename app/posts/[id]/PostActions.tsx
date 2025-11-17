@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface PostActionsProps {
-  postId: number;
+  postId: string;
 }
 
 export default function PostActions({ postId }: PostActionsProps) {

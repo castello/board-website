@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import EditForm from './EditForm';
 
 interface PageProps {
@@ -8,9 +8,11 @@ interface PageProps {
 
 export default async function EditPost({ params }: PageProps) {
   const { id } = await params;
-  const post = await prisma.post.findUnique({
-    where: { id: parseInt(id) },
-  });
+  const { data: post } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('id', id)
+    .single();
 
   if (!post) {
     notFound();

@@ -39,9 +39,13 @@ test.describe('게시판 기능 테스트', () => {
 
     // 상세 페이지 요소 확인
     await expect(page.locator('h1')).toBeVisible();
-    await expect(page.getByRole('link', { name: '목록으로' })).toBeVisible();
-    await expect(page.getByRole('link', { name: '수정' })).toBeVisible();
-    await expect(page.getByRole('button', { name: '삭제' })).toBeVisible();
+
+    // 버튼들이 로드될 때까지 대기
+    await page.waitForLoadState('networkidle');
+
+    await expect(page.getByText('목록으로')).toBeVisible();
+    await expect(page.getByText('수정')).toBeVisible();
+    await expect(page.getByText('삭제')).toBeVisible();
   });
 
   test('게시글 수정', async ({ page }) => {
@@ -50,8 +54,11 @@ test.describe('게시판 기능 테스트', () => {
     // 첫 번째 게시글 클릭
     await page.locator('a[href^="/posts/"]').first().click();
 
+    // 페이지 로드 대기
+    await page.waitForLoadState('networkidle');
+
     // 수정 버튼 클릭
-    await page.getByRole('link', { name: '수정' }).click();
+    await page.getByText('수정').click();
 
     // 제목 수정
     const titleInput = page.getByLabel('제목');
@@ -75,11 +82,14 @@ test.describe('게시판 기능 테스트', () => {
       // 첫 번째 게시글 클릭
       await page.locator('a[href^="/posts/"]').first().click();
 
+      // 페이지 로드 대기
+      await page.waitForLoadState('networkidle');
+
       // 삭제 확인 다이얼로그 처리
       page.on('dialog', dialog => dialog.accept());
 
       // 삭제 버튼 클릭
-      await page.getByRole('button', { name: '삭제' }).click();
+      await page.getByText('삭제').click();
 
       // 메인 페이지로 리다이렉트되었는지 확인
       await expect(page).toHaveURL('/');

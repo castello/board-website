@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 
 // GET /api/posts - 모든 게시글 조회
 export async function GET() {
   try {
-    const posts = await prisma.post.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
+    const { data: posts, error } = await supabase
+      .from('posts')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
     return NextResponse.json(posts);
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -32,13 +34,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const post = await prisma.post.create({
-      data: {
+    const { data: post, error } = await supabase
+      .from('posts')
+      .insert({
         title,
         content,
         author,
-      },
-    });
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
 
     return NextResponse.json(post, { status: 201 });
   } catch (error) {

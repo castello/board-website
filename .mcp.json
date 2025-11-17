@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@executeautomation/playwright-mcp-server"
+      ],
+      "env": {
+        "PLAYWRIGHT_HEADLESS": "true"
+      }
+    },
+    "supabase": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--project-ref=cxbetdsiaopllpinnufn"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_bc64bebdf0384cdb0bd87594ec1008a6c64915de"
+      }
+    }
+  }
+}
