@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import type { Post } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const posts = await prisma.post.findMany({
+  const posts: Post[] = await prisma.post.findMany({
     orderBy: {
       createdAt: 'desc',
     },
