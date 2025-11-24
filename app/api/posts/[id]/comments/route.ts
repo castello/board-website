@@ -59,6 +59,44 @@ export async function POST(
 
     if (error) throw error;
 
+    // 자동 응답 시스템: 게시글 작성자가 자동으로 감사 댓글 작성
+    try {
+      // 게시글 작성자 조회
+      const { data: post } = await supabase
+        .from('posts')
+        .select('author')
+        .eq('id', id)
+        .single();
+
+      // 댓글 작성자가 게시글 작성자와 다른 경우에만 자동 응답
+      if (post && post.author !== author) {
+        const autoReplyMessages = [
+          '댓글 감사합니다! 🙏',
+          '의견 감사드립니다!',
+          '소중한 댓글 감사합니다!',
+          '댓글 남겨주셔서 감사해요!',
+          '관심 가져주셔서 감사합니다! 😊',
+        ];
+
+        // 랜덤 메시지 선택
+        const randomMessage = autoReplyMessages[
+          Math.floor(Math.random() * autoReplyMessages.length)
+        ];
+
+        // 자동 응답 댓글 생성 (에러가 나도 원래 댓글은 성공)
+        await supabase
+          .from('comments')
+          .insert({
+            post_id: id,
+            author: post.author,
+            content: randomMessage,
+          });
+      }
+    } catch (autoReplyError) {
+      // 자동 응답 실패해도 원래 댓글은 성공으로 처리
+      console.error('Auto-reply failed:', autoReplyError);
+    }
+
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {
     console.error('Error creating comment:', error);
